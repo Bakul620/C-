@@ -1,0 +1,134 @@
+
+using System;
+using System.Windows.Forms;
+
+namespace calculator
+{
+    public partial class Form1 : Form
+    {
+        string operand1 = "";
+        string operand2 = "";
+        char operation;
+        bool isOperatorClicked = false;
+
+
+        public Form1()
+        {
+            InitializeComponent();
+            txtDisplay.Text = "";
+        }
+
+        private void txtDisplay_TextChanged(object sender, EventArgs e)
+        {
+            // Do nothing
+        }
+
+        // Digit buttons (0-9)
+        private void btn0_Click(object sender, EventArgs e) => AppendDigit("0");
+        private void btn1_Click(object sender, EventArgs e) => AppendDigit("1");
+        private void btn2_Click(object sender, EventArgs e) => AppendDigit("2");
+        private void btn3_Click(object sender, EventArgs e) => AppendDigit("3");
+        private void btn4_Click(object sender, EventArgs e) => AppendDigit("4");
+        private void btn6_Click(object sender, EventArgs e) => AppendDigit("6");
+        private void btn7_Click(object sender, EventArgs e) => AppendDigit("7");
+        private void btn8_Click(object sender, EventArgs e) => AppendDigit("8");
+        private void btn9_Click(object sender, EventArgs e) => AppendDigit("9");
+        private void button6_Click(object sender, EventArgs e) => AppendDigit("5"); // btn5
+
+        private void AppendDigit(string digit)
+        {
+            if (isOperatorClicked)
+            {
+                txtDisplay.Text = ""; // Clear display after operator
+                isOperatorClicked = false;
+            }
+
+            txtDisplay.Text += digit;
+        }
+
+
+
+        // Operator buttons
+        private void btnAdd_Click(object sender, EventArgs e)
+        {
+            SetOperation('+');
+        }
+
+        private void btnSub_Click(object sender, EventArgs e)
+        {
+            SetOperation('-');
+        }
+
+        private void btnMul_Click(object sender, EventArgs e)
+        {
+            SetOperation('*');
+        }
+
+        private void btnDiv_Click(object sender, EventArgs e)
+        {
+            SetOperation('/');
+        }
+
+        private void SetOperation(char op)
+        {
+            if (txtDisplay.Text == "") return;
+
+            operand1 = txtDisplay.Text;
+            operation = op;
+            isOperatorClicked = true;
+            txtDisplay.Text = "";
+            txtDisplay.Focus();
+        }
+
+
+        // Equal (=) button
+        private void btnEqual_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                operand2 = txtDisplay.Text;
+
+                double num1 = double.Parse(operand1);
+                double num2 = double.Parse(operand2);
+                double result = 0;
+
+                switch (operation)
+                {
+                    case '+': result = num1 + num2; break;
+                    case '-': result = num1 - num2; break;
+                    case '*': result = num1 * num2; break;
+                    case '/':
+                        if (num2 == 0)
+                        {
+                            MessageBox.Show("Cannot divide by zero!");
+                            return;
+                        }
+                        result = num1 / num2;
+                        break;
+                }
+
+                txtDisplay.Text = result.ToString();
+                operand1 = result.ToString(); // Save result as next operand1
+                operand2 = "";
+                isOperatorClicked = false;
+            }
+            catch
+            {
+                MessageBox.Show("Invalid input.");
+            }
+        }
+
+
+        // Clear (C) button
+        private void btnClear_Click(object sender, EventArgs e)
+        {
+            txtDisplay.Text = "";
+            operand1 = "";
+            operand2 = "";
+            isOperatorClicked = false;
+            txtDisplay.Focus();
+        }
+
+
+    }
+}
